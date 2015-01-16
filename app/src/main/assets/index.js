@@ -1,0 +1,1 @@
+console.log("What's the meaning of life? " + meaning);
