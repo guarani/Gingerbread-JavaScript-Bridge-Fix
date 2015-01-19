@@ -46,7 +46,6 @@ public class MainActivity extends ActionBarActivity {
             @Override
             public void onLoadResource(WebView view, String url) {
                 Log.d(TAG, "onLoadResource: " + url);
-                view.stopLoading();
 
                 if (url.endsWith(".js")) {
                     view.stopLoading();
@@ -55,72 +54,29 @@ public class MainActivity extends ActionBarActivity {
                         String path = urlObj.getPath();
                         path = path.substring(path.lastIndexOf("/") + 1);
 
-                        if (url.endsWith(".js")) {
-                            StringBuilder buf = new StringBuilder();
+                        StringBuilder buf = new StringBuilder();
 
-                            try {
-                                InputStream js = getAssets().open(path);
-                                BufferedReader in = new BufferedReader(new InputStreamReader(js, "UTF-8"));
-                                String str;
-                                while ((str = in.readLine()) != null) {
-                                    buf.append(str);
-                                }
-
-                                in.close();
-                            } catch (IOException e) {
-                                Log.e(TAG, "File not read", e);
+                        try {
+                            InputStream js = getAssets().open(path);
+                            BufferedReader in = new BufferedReader(new InputStreamReader(js, "UTF-8"));
+                            String str;
+                            while ((str = in.readLine()) != null) {
+                                buf.append(str);
                             }
 
-                            buf.insert(0, "meaning = 42;");
-                            webView.loadDataWithBaseURL(url, "", "text/html", "UTF-8", null);
-                            webView.loadUrl("javascript: " + buf.toString());
+                            in.close();
+                        } catch (IOException e) {
+                            Log.e(TAG, "File not read", e);
                         }
+
+                        buf.insert(0, "meaning = 42;");
+                        webView.loadDataWithBaseURL(url, "", "text/javascript", "UTF-8", null);
+                        webView.loadUrl("javascript: " + buf.toString());
 
                     } catch (MalformedURLException e) {
                         e.printStackTrace();
                     }
                 }
-            }
-
-            @Override
-            public void onPageStarted (WebView view, String url, Bitmap favicon) {
-
-                Log.d(TAG, "onPageStarted: " + url);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                Log.d(TAG, "shouldOverrideUrlLoading: " + url);
-//                try {
-//                    URL urlObj = new URL(url);
-//                    String path = urlObj.getPath();
-//
-//                    if (url.endsWith(".js")) {
-//                        StringBuilder buf = new StringBuilder();
-//
-//                        try {
-//                            InputStream js = getAssets().open(path);
-//                            BufferedReader in = new BufferedReader(new InputStreamReader(js, "UTF-8"));
-//                            String str;
-//                            while ((str = in.readLine()) != null) {
-//                                buf.append(str);
-//                            }
-//
-//                            in.close();
-//                        } catch (IOException e) {
-//                            Log.e(TAG, "File not read", e);
-//                        }
-//
-//                        buf.insert(0, "meaning = 99;");
-//
-//                        return true;
-//                    }
-//
-//                } catch (MalformedURLException e) {
-//                    e.printStackTrace();
-//                }
-
-                return  true;
             }
         });
 
